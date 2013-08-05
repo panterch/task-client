@@ -1,0 +1,9 @@
+tmp/
+*~
+*.swp
+.DS_Store
+Thumbs.db
+*.swo
+.yardoc
+chromedriver.log
+.idea
