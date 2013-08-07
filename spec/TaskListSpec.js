@@ -23,17 +23,29 @@ describe("TaskList", function() {
   });
 
   describe("load", function() {
-
     it("creates a tasklist via ajax", function() {
-      spyOn($, "getJSON").andCallFake(function(url, success) {
-        success({ title: 'the list', tasks: []});
+      // mock the ajax call to the server loading the tasklist
+      spyOn($, "getJSON").andCallFake(function(url, callback) {
+        callback({ title: 'the list',
+          tasks: [
+            { title: 'first task', done: true },
+            { title: '2nd task', done: false },
+          ]});
       });
+
+      // execute a mocked ajax call and populate tasklist into result
       var result;
       TaskList.load('testlist', function(taskList) {
         result = taskList;
-
       });
+
+      // assertations
       expect(result.title).toEqual('the list');
+      expect(result.tasks.length).toEqual(2);
+      expect(result.tasks[0].title).toEqual('first task');
+      expect(result.tasks[0].done).toBe(true);
+      expect(result.tasks[1].title).toEqual('2nd task');
+      expect(result.tasks[1].done).toBe(false);
     });
   });
 
