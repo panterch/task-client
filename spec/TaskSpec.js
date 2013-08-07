@@ -37,21 +37,22 @@ describe("Task", function() {
 
   describe("render", function() {
     it("renders an unchecked checkbox", function() {
-      var markup = task.render()
-      expect(markup).toContain('input type="checkbox"')
-      expect(markup).not.toContain('checked')
+      var $markup = task.render();
+      expect($markup.find('input[name=done]')).not.toBeChecked();
     });
     it("renders an empty input field", function() {
-      var markup = task.render()
-      expect(markup).toContain('input type="text" value=""')
+      var $markup = task.render();
+      expect($markup.find('input[name=title]')).toHaveValue('')
     });
     it("checks the checkbox when done", function() {
       task.done = true;
-      expect(task.render()).toContain('checked="checked"')
+      var $markup = task.render();
+      expect($markup.find('input[name=done]')).toBeChecked();
     });
     it("renders an the title", function() {
       task.title = 'task title';
-      expect(task.render()).toContain('input type="text" value="task title"')
+      var $markup = task.render();
+      expect($markup.find('input[name=title]')).toHaveValue('task title');
     });
   });
 

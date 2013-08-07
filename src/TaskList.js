@@ -18,13 +18,41 @@ TaskList.prototype.createTask = function(title) {
 
 
 TaskList.prototype.render = function() {
-  var _markup = [ '<ul>' ];
+  var $markup = $('<ul>');
   var _i;
   for (_i = 0; _i < this.tasks.length; _i += 1) {
-    _markup.push(this.tasks[_i].render());
+    $markup.append(this.tasks[_i].render());
   }
-  _markup.push('</ul>');
-  return _markup.join('\n');
+  return $markup;
+}
+
+TaskList.prototype.toJSON = function() {
+  var _hash = { id: this.id, title: this.title, tasks: [] }
+  var _i;
+  for (_i = 0; _i < this.tasks.length; _i += 1) {
+    _hash.tasks.push({
+      title: this.tasks[_i].title,
+      done:  this.tasks[_i].done
+    });
+  }
+  return JSON.stringify(_hash);
+}
+
+/*
+ * persists the tasklist to the server.
+ *
+ * for tasklists without id (not yet persisted) the id
+ * is written back to the model after it is received from
+ * the server.
+ */
+TaskList.prototype.save = function() {
+  var _that = this;
+  var _url = 'http://zhaw.task.li/task_lists/';
+  if (this.id) { _url += this.id; }
+  $.post(_url, this.toJSON(), function(data) {
+    _that.id = JSON.parse(data).id;
+    window.location.hash = _that.id
+  });
 }
 
 /*
