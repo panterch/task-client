@@ -28,7 +28,6 @@ TaskList.prototype.render = function() {
 
 TaskList.load = function(id, callback) {
   $.getJSON('http://zhaw.task.li/task_lists/'+id, function(data) {
-    console.log('xxxx');
     var _taskList = new TaskList()
     _taskList.title = data.title;
     var _i;

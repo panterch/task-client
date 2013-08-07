@@ -26,7 +26,6 @@ describe("TaskList", function() {
 
     it("creates a tasklist via ajax", function() {
       spyOn($, "getJSON").andCallFake(function(url, success) {
-        console.log('xxx');
         success({ title: 'the list', tasks: []});
       });
       var result;
