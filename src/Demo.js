@@ -4,25 +4,12 @@ var taskList;
 
 $(function() {
 
-  if (window.location.hash.length > 16) {
-    TaskList.load(window.location.hash.substring(1), function(tl) {
-      taskList = tl;
-      $('#taskList').html(taskList.render());
-    });
-  } else {
-    taskList = new TaskList();
-    taskList.createTask('');
-    $('#taskList').html(taskList.render());
-  }
+  var taskList = new TaskList();
+  taskList.createTask("Setup todo list");
+  taskList.createTask("Buy milk");
+  taskList.createTask("Read recipe");
+  taskList.createTask("Invite guests");
+  taskList.tasks[0].done = true;
 
-  $('#createTask').click(function(event) {
-    event.preventDefault();
-    var task = taskList.createTask('');
-    $('#taskList ul').append(task.render());
-  });
-
-  $('#saveTasks').click(function(event) {
-    taskList.save();
-  });
-
+  taskList.render().appendTo('#taskList');
 });
