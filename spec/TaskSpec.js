@@ -56,4 +56,24 @@ describe("Task", function() {
     });
   });
 
+  describe("syncs the model with its markup", function() {
+    var $markup;
+    beforeEach(function() {
+      $markup = task.render();
+    });
+    it('adds itself as data to the markup', function() {
+      expect($markup.data('task')).toEqual(task);
+    });
+    it('syncs the title value', function() {
+      // change value of title input and fire an change event
+      $markup.find('input[name=title]').val('changed title').change();
+      expect(task.title).toEqual('changed title');
+    });
+    it('syncs the done value', function() {
+      // change value of done checkbox and fire an change event
+      $markup.find('input[name=done]').prop('checked', true).change();
+      expect(task.done).toEqual(true);
+    });
+  });
+
 });
