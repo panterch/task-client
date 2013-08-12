@@ -12,13 +12,8 @@ Task.prototype.render = function() {
     '  <input name="done"  type="checkbox" '+_checked+'" />',
     '  <input name="title" type="text" value="'+_title+'" />',
     '</li>'].join(" "))
-  $markup.data('task', this);
-  $markup.find('input').change(function(event) {
-    var $li = $(this).parent('li')
-    var _task = $li.data('task');
-    _task.done = $li.find('input[name=done]').is(':checked');
-    _task.title = $li.find('input[name=title]').val();
-  });
+  // TODO add task model as html data attribute under key 'task'
+  // TODO sync model data after text was inserted or done was checked
   return $markup;
 };
 

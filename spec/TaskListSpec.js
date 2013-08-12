@@ -39,7 +39,6 @@ describe("TaskList", function() {
     });
   });
 
-
   describe("save", function() {
     beforeEach(function() {
       taskList.createTask('first');
