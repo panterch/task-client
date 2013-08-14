@@ -4,6 +4,7 @@ describe("TaskList", function() {
   var taskList;
 
   beforeEach(function() {
+    localStorage.clear();
     taskList = new TaskList();
   });
 
@@ -39,48 +40,54 @@ describe("TaskList", function() {
     });
   });
 
+  describe("clear", function() {
+    it("deletes everything in the localStorage", function() {
+
+      // Mock clear function, to prevent page reload
+      spyOn(taskList, "clear").andCallFake(function() {
+        localStorage.clear();
+      });
+
+      taskList.createTask('first');
+      taskList.createTask('second');
+
+      taskList.save();
+      taskList.clear();
+      expect(localStorage.length).toEqual(0);
+    });
+  });
 
   describe("save", function() {
     beforeEach(function() {
       taskList.createTask('first');
       taskList.createTask('second');
 
-      // mock the ajax call to the server persisting the tasklist
-      spyOn($, "post").andCallFake(function(url, data, callback) {
-        callback(JSON.stringify({
-          id: '12345',
-          title: '',
-          tasks: [
-            { title: 'first',  done: false },
-            { title: 'second', done: false },
-          ]}));
-      });
-
       taskList.save();
     });
 
-    it("consumes the id received by the server", function() {
-      expect(taskList.id).toEqual('12345');
-    });
-    it("sets the hash", function() {
-      expect(window.location.hash).toEqual('#12345');
+    spyOn(localStorage, "key").andReturn('_taskList');
+
+    it("uses localstorage", function() {
+      expect(localStorage.key(0)).toEqual('_taskList');
     });
   });
 
   describe("load", function() {
-    it("creates a tasklist via ajax", function() {
-      // mock the ajax call to the server loading the tasklist
-      spyOn($, "getJSON").andCallFake(function(url, callback) {
-        callback({ title: 'the list',
-          tasks: [
-            { title: 'first task', done: true },
-            { title: '2nd task', done: false },
-          ]});
-      });
+    beforeEach(function() {
+      taskList.title = 'the list';
+      taskList.createTask('first task');
+      taskList.createTask('2nd task');
 
-      // execute a mocked ajax call and populate tasklist into result
+      taskList.save();
+    });
+
+    it("creates a tasklist via localStorage", function() {
+
+      spyOn(localStorage, "getItem").andReturn('{"id":null,"title":"the list","tasks":[{"title":"first task","done":false},{"title":"2nd task","done":false}]}');
+
       var result;
-      TaskList.load('testlist', function(taskList) {
+
+      TaskList.load(function(taskList) {
         result = taskList;
       });
 
@@ -88,10 +95,8 @@ describe("TaskList", function() {
       expect(result.title).toEqual('the list');
       expect(result.tasks.length).toEqual(2);
       expect(result.tasks[0].title).toEqual('first task');
-      expect(result.tasks[0].done).toBe(true);
       expect(result.tasks[1].title).toEqual('2nd task');
-      expect(result.tasks[1].done).toBe(false);
     });
   });
 
-});
+  });

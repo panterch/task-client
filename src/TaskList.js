@@ -39,41 +39,37 @@ TaskList.prototype.toJSON = function() {
 }
 
 /*
- * persists the tasklist to the server.
- *
- * for tasklists without id (not yet persisted) the id
- * is written back to the model after it is received from
- * the server.
+ * deletes everything in the localStorage and reload page
  */
-TaskList.prototype.save = function() {
-  var _that = this;
-  var _url = 'http://zhaw.task.li/task_lists/';
-  if (this.id) { _url += this.id; }
-  $.post(_url, this.toJSON(), function(data) {
-    _that.id = JSON.parse(data).id;
-    window.location.hash = _that.id
-  });
+TaskList.prototype.clear = function() {
+  localStorage.clear();
+  location.reload();
 }
 
 /*
- * Loads the given tasklist from the server.
+ * persists the tasklist to the localStorage
+ */
+TaskList.prototype.save = function() {
+  localStorage.setItem("_taskList", this.toJSON())
+}
+
+/*
+ * Loads the given tasklist from the localStorage.
  *
- * @param {string} id - unique identifier of the tasklist to load
  * @param {function} callback - method to call after the tasklist
  *   was successfully loaded. receives fully populated tasklist
  *   object as first and only parameter.
  */
-TaskList.load = function(id, callback) {
-  $.getJSON('http://zhaw.task.li/task_lists/'+id, function(data) {
-    var _taskList = new TaskList()
-    _taskList.id = data.id;
-    _taskList.title = data.title;
-    var _i;
-    for (_i = 0; _i < data.tasks.length; _i += 1) {
-      var _task = new Task();
-      _task = _taskList.createTask(data.tasks[_i].title);
-      _task.done = data.tasks[_i].done;
-    }
-    callback(_taskList)
-  });
+TaskList.load = function(callback) {
+  var _taskList = new TaskList();
+  var data = $.parseJSON(localStorage.getItem("_taskList"));
+  _taskList.id = data.id;
+  _taskList.title = data.title;
+  var _i;
+  for (_i = 0; _i < data.tasks.length; _i += 1) {
+    var _task = new Task();
+    _task = _taskList.createTask(data.tasks[_i].title);
+    _task.done = data.tasks[_i].done;
+  }
+  callback(_taskList)
 }

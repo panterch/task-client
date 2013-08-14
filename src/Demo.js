@@ -4,8 +4,8 @@ var taskList;
 
 $(function() {
 
-  if (window.location.hash.length > 16) {
-    TaskList.load(window.location.hash.substring(1), function(tl) {
+  if (localStorage.getItem("_taskList") !== null) {
+    TaskList.load(function(tl) {
       taskList = tl;
       $('#taskList').html(taskList.render());
     });
@@ -19,6 +19,10 @@ $(function() {
     event.preventDefault();
     var task = taskList.createTask('');
     $('#taskList ul').append(task.render());
+  });
+
+  $('#clearTasks').click(function(event) {
+    taskList.clear();
   });
 
   $('#saveTasks').click(function(event) {
