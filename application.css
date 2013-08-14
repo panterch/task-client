@@ -66,6 +66,10 @@ input {
 input[type="checkbox"] {
 }
 
+.finished {
+  opacity: 0.3;
+}
+
 input[type="text"] {
   width: 350px;
 }
