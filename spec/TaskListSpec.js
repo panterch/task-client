@@ -19,7 +19,8 @@ describe("TaskList", function() {
     });
     it("renders tasks", function() {
       taskList.createTask('test task');
-      expect(taskList.render().html()).toContain('test task');
+      expect(taskList.render().find('input[name=title]').val()).
+        toBe('test task');
     });
   });
 
